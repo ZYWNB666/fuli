@@ -70,18 +70,6 @@ class fuli(Plugin):
                 reply = Reply(ReplyType.ERROR, text)
             else:
                 reply = Reply(ReplyType.IMAGE_URL, pt_url)
-                # 资源下载到本地
-                pic_res = requests.get(pt_url, stream=True)
-                # 指定本地保存路径及文件名
-                print(current_time)
-                image_name = f'image_{current_time}.jpg'
-                local_image_path = f'E:\\python项目\\chatgpt-on-wechat-master\\download\\image\\{image_name}'  # 替换为实际路径
-                print(local_image_path)
-                with open(local_image_path, 'wb') as f:
-                    size = 0
-                    for block in pic_res.iter_content(1024):
-                        size += len(block)
-                        f.write(block)
             e_context["reply"] = reply
             e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
         if video_similarity > 0.2:
@@ -135,18 +123,6 @@ class fuli(Plugin):
                 video_url = pt_response.headers.get('location')
                 print(video_url)  # 获取真实URL地址
                 reply = Reply(ReplyType.VIDEO_URL, video_url)
-                # 资源下载到本地
-                pic_res = requests.get(video_url, stream=True)
-                # 指定本地保存路径及文件名
-                print(current_time)
-                video_name = f'video_{current_time}.mp4'
-                local_video_path = f'E:\\python项目\\chatgpt-on-wechat-master\\download\\video\\{video_name}'  # 替换为实际路径
-                print(local_video_path)
-                with open(local_video_path, 'wb') as f:
-                    size = 0
-                    for block in pic_res.iter_content(1024):
-                        size += len(block)
-                        f.write(block)
             except requests.ConnectionError:
                 text = "目标不可达!"
                 reply = Reply(ReplyType.ERROR, text)
