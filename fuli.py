@@ -27,11 +27,12 @@ class fuli(Plugin):
         super().__init__()
         self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
         logger.info("[chajian] inited")
-        self.config = super().load_config()
+        # self.config = super().load_config()
 
     def on_handle_context(self, e_context: EventContext):
         if e_context["context"].type != ContextType.TEXT:
             return
+        reply = None
         query = e_context["context"].content.strip()
         current_time = datetime.datetime.now().strftime('%Y-%m-%d_%H_%M_%S')
         # print('时间匹配度' + time_similarity)
@@ -81,6 +82,8 @@ class fuli(Plugin):
                     for block in pic_res.iter_content(1024):
                         size += len(block)
                         f.write(block)
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
         if video_similarity > 0.2:
             print(query + '测试随机福利视频')
             print(video_similarity)
@@ -115,7 +118,6 @@ class fuli(Plugin):
                 'ndym.php?type=video',
                 'jpmt.php?type=video',
             ]
-
             suijiurl = random.choice(urls_list)
             pt_url = 'https://api.yujn.cn/api/' + suijiurl
             try:
@@ -123,7 +125,8 @@ class fuli(Plugin):
                 if response.status_code != 200:
                     text = "目标不可达!"
                     reply = Reply(ReplyType.ERROR, text)
-                    return reply
+                    e_context["reply"] = reply
+                    e_context.action = EventAction.BREAK_PASS
                 headers = {'Content-Type': "application/x-www-form-urlencoded"}
                 print(pt_url)  # 打印随机URL地址
                 pt_response = requests.get(pt_url, headers=headers, allow_redirects=False, timeout=10)
@@ -148,8 +151,8 @@ class fuli(Plugin):
                 text = "目标不可达!"
                 reply = Reply(ReplyType.ERROR, text)
 
-        e_context["reply"] = reply
-        e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
+            e_context["reply"] = reply
+            e_context.action = EventAction.BREAK_PASS  # 事件结束，并跳过处理context的默认逻辑
         # return
 
     def get_help_text(self, **kwargs):
