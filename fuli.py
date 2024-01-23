@@ -15,14 +15,14 @@ from plugins import *
 
 
 @plugins.register(
-    name="qushuiyin",
-    desire_priority=100,
+    name="fuli",
+    desire_priority=99,
     hidden=True,
-    desc="去水印插件",
-    version="0.1",
+    desc="fuli插件",
+    version="0.2",
     author="lanvent",
 )
-class qushuiyin(Plugin):
+class fuli(Plugin):
     def __init__(self):
         super().__init__()
         self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
